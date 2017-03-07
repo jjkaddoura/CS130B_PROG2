@@ -11,10 +11,10 @@ int main(int argc, char** argv)
 	char input;
 	string line;
 	string arr[3];
-	int i = 0;
+	int i;
+
 	while(getline(cin,line))
 	{
-		
 		Job job;
 		i = 0;
 		stringstream str_stream(line);
@@ -35,7 +35,11 @@ int main(int argc, char** argv)
 			exit(1);
 		}
 		payoff.jobs.push_back(job);
-		payoff.printJobs();
+
 	}
+	payoff.quicksortEndTime();
+	payoff.printJobs();
+	cout << endl << endl;
+	payoff.calcMaxPayout();
 	return 0;
 }
