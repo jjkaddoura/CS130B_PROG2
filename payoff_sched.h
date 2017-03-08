@@ -26,8 +26,9 @@ public:
 	///////////////////
 	int calcMaxPayout();
 	int calcMaxPayout(int start, int end);
-	int findLatestNonconflicting(int index);
+	int findLatestNonconflictBefore(int index);
 	void printJobs();
+	int max(int a, int b);
 	void quicksortEndTime();
 	void quicksortEndTime(int start, int end);
 	int partition(int start, int end);
@@ -37,7 +38,7 @@ public:
 	/// MEMBERS
 	///////////////////
 	std::vector<Job> jobs;
-	Job* optimal;
+	int optimal[100000];
 
 private:	
 

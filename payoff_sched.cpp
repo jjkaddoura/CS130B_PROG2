@@ -5,7 +5,7 @@ using namespace std;
 
 void Payoff_sched::printJobs(){
 	for(int i = 0; i < jobs.size(); i++){
-		printf("Job %d: start=%d end=%d pay=%d\n",i+1,jobs[i].start,jobs[i].end,jobs[i].pay);
+		printf("Job %d: start=%d end=%d pay=%d\n",i,jobs[i].start,jobs[i].end,jobs[i].pay);
 	}
 }
 
@@ -18,7 +18,7 @@ void Payoff_sched::quicksortEndTime(int start, int end){
 	int partitionIndex;
 	if(start < end){
 		r = partition(start,end);
-		quicksortEndTime(start,r-1);
+		quicksortEndTime(start,r);
 		quicksortEndTime(r+1,end);
 	}
 }
@@ -33,7 +33,8 @@ int Payoff_sched::partition(int start, int end){
 			swap(i,j);
 		}
 	}
-	swap(partitionIndex,i);
+	if(jobs[i].end < jobs[partitionIndex].end && i > partitionIndex)
+		swap(partitionIndex,i);
 	return i;
 }
 
@@ -43,38 +44,46 @@ void Payoff_sched::swap(int index1, int index2){
 	jobs[index2] = tmp;
 }
 
+
 int Payoff_sched::calcMaxPayout(){
 	quicksortEndTime();
-	return calcMaxPayout(0, jobs.size()/2) + calcMaxPayout(jobs.size()/2,jobs.size()-1);
-}
+	if(jobs.size() == 1) return jobs[0].pay;
+	optimal[0] = jobs[0].pay;
+	for(int i = 1; i < jobs.size(); i++){
+		int latestNonconflict = findLatestNonconflictBefore(i); 
+		int currentProfit = jobs[i].pay;
+		cout << "At job: " << i << ", the latestNonconflict is: " << latestNonconflict << endl;
+		if(latestNonconflict != -1){
+			currentProfit += optimal[latestNonconflict];
+		}
+		optimal[i] = max(currentProfit, optimal[i-1]);
 
-int Payoff_sched::calcMaxPayout(int start, int end){
-	if(end-start <= 1) return jobs[start].pay;
-	int i;
-	for(i = end; i >= start; i--){
-		int latestNonconflict = findLatestNonconflicting(i); 
-		cout << "At index: " << i << ", the latestNonconflict is: " << latestNonconflict << endl;
 	}
-	return -1;
+	return optimal[jobs.size()-1];
 }
 
-int Payoff_sched::findLatestNonconflicting(int index){
+int Payoff_sched::findLatestNonconflictBefore(int index){
 	if(index == 0) return 0;
-	int high = index-1;
-	int low = 0;
+	int max = index-1;
+	int min = 0;
 	int i;
 	int startTime = jobs[index].start;
-	
-	while(low <= high){
-		int mid = (low+high)/2;
+	while(min <= max){
+		int mid = (min+max)/2;
 		if(jobs[mid].end <= startTime){
-			if(jobs[mid+1].end < startTime)
-				low = mid+1;
+			if(jobs[mid+1].end <= startTime)
+				min = mid+1;
 			else
 				return mid;
 		}
 		else
-			high = mid-1;
+			max = mid-1;
 	}
 	return -1;
+}
+
+int Payoff_sched::max(int a, int b){
+	if(a > b) 
+		return a;
+	return b;
 }

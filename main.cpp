@@ -39,7 +39,7 @@ int main(int argc, char** argv)
 	}
 	payoff.quicksortEndTime();
 	payoff.printJobs();
-	cout << endl << endl;
-	payoff.calcMaxPayout();
+	cout << endl;
+	cout << "The max payout is: " << payoff.calcMaxPayout() << endl;
 	return 0;
 }
