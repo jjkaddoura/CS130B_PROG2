@@ -17,6 +17,15 @@ struct Job {
   }
 };
 
+struct Node {
+	int val;
+	std::string opt;
+	Node(){
+		opt = "";
+		val = 0;
+	}
+};
+
 class Payoff_sched {
 
 public:
@@ -38,11 +47,8 @@ public:
 	/// MEMBERS
 	///////////////////
 	std::vector<Job> jobs;
-	int optimal[100000];
+	Node* optimal;
 
-private:	
-
-	int payout;
 
 };
 

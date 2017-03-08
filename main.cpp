@@ -37,9 +37,22 @@ int main(int argc, char** argv)
 		payoff.jobs.push_back(job);
 
 	}
-	payoff.quicksortEndTime();
-	payoff.printJobs();
-	cout << endl;
-	cout << "The max payout is: " << payoff.calcMaxPayout() << endl;
+	// payoff.quicksortEndTime();
+	// payoff.printJobs();
+	payoff.optimal = new Node[payoff.jobs.size()];
+	cout << "Max Payoff: " << payoff.calcMaxPayout() << endl;
+	string o = "";
+	for(int i = 0; i < payoff.optimal[payoff.jobs.size()-1].opt.length(); i++)
+	{
+		if(payoff.optimal[payoff.jobs.size()-1].opt[i] != ' ')
+			o += payoff.optimal[payoff.jobs.size()-1].opt[i];
+		else{
+			if(o == "") continue;
+			cout << payoff.jobs[stoi(o)].start << " " 
+				<< payoff.jobs[stoi(o)].end << " " 
+				<< payoff.jobs[stoi(o)].pay << endl;
+			o = "";
+		}
+	}
 	return 0;
 }

@@ -48,18 +48,27 @@ void Payoff_sched::swap(int index1, int index2){
 int Payoff_sched::calcMaxPayout(){
 	quicksortEndTime();
 	if(jobs.size() == 1) return jobs[0].pay;
-	optimal[0] = jobs[0].pay;
+	optimal[0].val = jobs[0].pay;
+	optimal[0].opt = "0 ";
 	for(int i = 1; i < jobs.size(); i++){
 		int latestNonconflict = findLatestNonconflictBefore(i); 
 		int currentProfit = jobs[i].pay;
-		cout << "At job: " << i << ", the latestNonconflict is: " << latestNonconflict << endl;
 		if(latestNonconflict != -1){
-			currentProfit += optimal[latestNonconflict];
-		}
-		optimal[i] = max(currentProfit, optimal[i-1]);
+			currentProfit += optimal[latestNonconflict].val;
 
+		}
+		if(currentProfit > optimal[i-1].val){
+			optimal[i].val = currentProfit;
+			if(optimal[latestNonconflict].opt.find(to_string(i)) == -1 )
+				if(optimal[latestNonconflict].opt != "") optimal[i].opt = optimal[latestNonconflict].opt + " " + to_string(i) + " ";
+				else optimal[i].opt = to_string(i) + " ";
+		}
+		else{
+			optimal[i].val = optimal[i-1].val;
+			if(optimal[i-1].opt != "") optimal[i].opt = optimal[i-1].opt;
+		}
 	}
-	return optimal[jobs.size()-1];
+	return optimal[jobs.size()-1].val;
 }
 
 int Payoff_sched::findLatestNonconflictBefore(int index){
