@@ -1,5 +1,6 @@
 #include <iostream>
 #include <cstdlib>
+#include <algorithm>
 #include "payoff_sched.h"
 using namespace std;
 
@@ -44,9 +45,9 @@ void Payoff_sched::swap(int index1, int index2){
 	jobs[index2] = tmp;
 }
 
-
 int Payoff_sched::calcMaxPayout(){
-	quicksortEndTime();
+	//quicksortEndTime();
+	sort(&jobs[0],&jobs[jobs.size()], sortByEndTime);
 	if(jobs.size() == 1) return jobs[0].pay;
 	optimal[0].val = jobs[0].pay;
 	optimal[0].opt = "0 ";
@@ -55,17 +56,26 @@ int Payoff_sched::calcMaxPayout(){
 		int currentProfit = jobs[i].pay;
 		if(latestNonconflict != -1){
 			currentProfit += optimal[latestNonconflict].val;
-
 		}
 		if(currentProfit > optimal[i-1].val){
 			optimal[i].val = currentProfit;
-			if(optimal[latestNonconflict].opt.find(to_string(i)) == -1 )
+			if(optimal[latestNonconflict].opt.find(to_string(i)) == -1 ){
 				if(optimal[latestNonconflict].opt != "") optimal[i].opt = optimal[latestNonconflict].opt + " " + to_string(i) + " ";
 				else optimal[i].opt = to_string(i) + " ";
+			}
+			// if(latestNonconflict != -1 && optimal[latestNonconflict].optJobs.size() > 0){	
+			// 	for(int j = 0; j < optimal[latestNonconflict].optJobs.size(); j++){
+			// 		optimal[i].optJobs.push_back(optimal[latestNonconflict].optJobs[j]);
+			// 	}
+			// }
+			// optimal[i].optJobs.push_back(jobs[i]);
 		}
 		else{
 			optimal[i].val = optimal[i-1].val;
 			if(optimal[i-1].opt != "") optimal[i].opt = optimal[i-1].opt;
+			// for(int j = 0; j < optimal[i-1].optJobs.size(); j++){
+			// 	optimal[i].optJobs.push_back(optimal[i-1].optJobs[j]);
+			// }
 		}
 	}
 	return optimal[jobs.size()-1].val;

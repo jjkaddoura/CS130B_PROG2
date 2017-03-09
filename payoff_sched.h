@@ -15,14 +15,16 @@ struct Job {
   	this->pay = j.pay;
   	return *this;
   }
+
 };
+
 
 struct Node {
 	int val;
 	std::string opt;
 	Node(){
-		opt = "";
 		val = 0;
+		opt = "";
 	}
 };
 
@@ -33,6 +35,7 @@ public:
 	///////////////////
 	/// METHODS
 	///////////////////
+	static bool sortByEndTime(const Job &j1, const Job &j2){ return j1.end < j2.end; }
 	int calcMaxPayout();
 	int calcMaxPayout(int start, int end);
 	int findLatestNonconflictBefore(int index);
@@ -51,6 +54,7 @@ public:
 
 
 };
+
 
 #endif
 
