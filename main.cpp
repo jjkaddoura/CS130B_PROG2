@@ -37,8 +37,7 @@ int main(int argc, char** argv)
 		payoff.jobs.push_back(job);
 
 	}
-	// payoff.quicksortEndTime();
-	// payoff.printJobs();
+
 	payoff.optimal = new Node[payoff.jobs.size()];
 	cout << "Max Payoff: " << payoff.calcMaxPayout() << endl;
 	string o = "";
@@ -54,5 +53,6 @@ int main(int argc, char** argv)
 			o = "";
 		}
 	}
+	delete [] payoff.optimal;
 	return 0;
 }
