@@ -10,43 +10,7 @@ void Payoff_sched::printJobs(){
 	}
 }
 
-void Payoff_sched::quicksortEndTime(){
-	quicksortEndTime(0,jobs.size());
-}
-
-void Payoff_sched::quicksortEndTime(int start, int end){
-	int r;
-	int partitionIndex;
-	if(start < end){
-		r = partition(start,end);
-		quicksortEndTime(start,r);
-		quicksortEndTime(r+1,end);
-	}
-}
-
-int Payoff_sched::partition(int start, int end){
-	int partitionIndex = start;
-	int p = jobs[partitionIndex].end;
-	int i = partitionIndex;
-	for(int j = partitionIndex+1; j < end; j++){
-		if(jobs[j].end <= p){
-			i++;
-			swap(i,j);
-		}
-	}
-	if(jobs[i].end < jobs[partitionIndex].end && i > partitionIndex)
-		swap(partitionIndex,i);
-	return i;
-}
-
-void Payoff_sched::swap(int index1, int index2){
-	Job tmp = jobs[index1];
-	jobs[index1] = jobs[index2];
-	jobs[index2] = tmp;
-}
-
 int Payoff_sched::calcMaxPayout(){
-	//quicksortEndTime();
 	sort(&jobs[0],&jobs[jobs.size()], sortByEndTime);
 	if(jobs.size() == 1) return jobs[0].pay;
 	optimal[0].val = jobs[0].pay;
@@ -63,19 +27,10 @@ int Payoff_sched::calcMaxPayout(){
 				if(optimal[latestNonconflict].opt != "") optimal[i].opt = optimal[latestNonconflict].opt + " " + to_string(i) + " ";
 				else optimal[i].opt = to_string(i) + " ";
 			}
-			// if(latestNonconflict != -1 && optimal[latestNonconflict].optJobs.size() > 0){	
-			// 	for(int j = 0; j < optimal[latestNonconflict].optJobs.size(); j++){
-			// 		optimal[i].optJobs.push_back(optimal[latestNonconflict].optJobs[j]);
-			// 	}
-			// }
-			// optimal[i].optJobs.push_back(jobs[i]);
 		}
 		else{
 			optimal[i].val = optimal[i-1].val;
 			if(optimal[i-1].opt != "") optimal[i].opt = optimal[i-1].opt;
-			// for(int j = 0; j < optimal[i-1].optJobs.size(); j++){
-			// 	optimal[i].optJobs.push_back(optimal[i-1].optJobs[j]);
-			// }
 		}
 	}
 	return optimal[jobs.size()-1].val;
@@ -101,8 +56,3 @@ int Payoff_sched::findLatestNonconflictBefore(int index){
 	return -1;
 }
 
-int Payoff_sched::max(int a, int b){
-	if(a > b) 
-		return a;
-	return b;
-}
