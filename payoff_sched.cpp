@@ -14,7 +14,7 @@ int Payoff_sched::calcMaxPayout(){
 	sort(&jobs[0],&jobs[jobs.size()], sortByEndTime);
 	if(jobs.size() == 1) return jobs[0].pay;
 	optimal[0].val = jobs[0].pay;
-	optimal[0].opt = "0 ";
+	last = 0; optimal[0].p = make_pair(-1,0);
 	for(int i = 1; i < jobs.size(); i++){
 		int latestNonconflict = findLatestNonconflictBefore(i); 
 		int currentProfit = jobs[i].pay;
@@ -23,14 +23,12 @@ int Payoff_sched::calcMaxPayout(){
 		}
 		if(currentProfit > optimal[i-1].val){
 			optimal[i].val = currentProfit;
-			if(optimal[latestNonconflict].opt.find(to_string(i)) == -1 ){
-				if(optimal[latestNonconflict].opt != "") optimal[i].opt = optimal[latestNonconflict].opt + " " + to_string(i) + " ";
-				else optimal[i].opt = to_string(i) + " ";
-			}
+			last = i;
+			if(latestNonconflict != -1) optimal[i].p = make_pair(latestNonconflict, i);
+			else optimal[i].p = make_pair(-1,i);
 		}
 		else{
-			optimal[i].val = optimal[i-1].val;
-			if(optimal[i-1].opt != "") optimal[i].opt = optimal[i-1].opt;
+			optimal[i].val = optimal[i-1].val; optimal[i].p = make_pair(i-1,-1);
 		}
 	}
 	return optimal[jobs.size()-1].val;
@@ -55,4 +53,3 @@ int Payoff_sched::findLatestNonconflictBefore(int index){
 	}
 	return -1;
 }
-

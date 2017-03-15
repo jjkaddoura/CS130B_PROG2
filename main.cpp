@@ -40,19 +40,10 @@ int main(int argc, char** argv)
 
 	payoff.optimal = new Node[payoff.jobs.size()];
 	cout << "Max Payoff: " << payoff.calcMaxPayout() << endl;
-	string o = "";
-	for(int i = 0; i < payoff.optimal[payoff.jobs.size()-1].opt.length(); i++)
-	{
-		if(payoff.optimal[payoff.jobs.size()-1].opt[i] != ' ')
-			o += payoff.optimal[payoff.jobs.size()-1].opt[i];
-		else{
-			if(o == "") continue;
-			cout << payoff.jobs[stoi(o)].start << " " 
-				<< payoff.jobs[stoi(o)].end << " " 
-				<< payoff.jobs[stoi(o)].pay << endl;
-			o = "";
-		}
-	}
+	if(payoff.jobs.size() == 1){cout << payoff.jobs[0].start << " " << payoff.jobs[0].end << " " << payoff.jobs[0].pay << endl; return 0; }
+	int iter = payoff.last; vector<Job> answers;
+	while(iter >= 0){ if(payoff.optimal[iter].p.second != -1) answers.push_back(payoff.jobs[iter]);iter = payoff.optimal[iter].p.first; }
+	for(int i = answers.size()-1; i >= 0; i--){ cout << answers[i].start << " " << answers[i].end << " " << answers[i].pay  << endl; }
 	delete [] payoff.optimal;
 	return 0;
 }

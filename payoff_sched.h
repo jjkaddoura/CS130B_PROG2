@@ -15,16 +15,13 @@ struct Job {
   	this->pay = j.pay;
   	return *this;
   }
-
 };
-
 
 struct Node {
 	int val;
-	std::string opt;
+  	std::pair<int,int> p;
 	Node(){
-		val = 0;
-		opt = "";
+                 val = 0;
 	}
 };
 
@@ -51,6 +48,7 @@ public:
 	///////////////////
 	std::vector<Job> jobs;
 	Node* optimal;
+	int last = 0;
 
 
 };
